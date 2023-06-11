@@ -88,8 +88,8 @@ void printExpolredStates(State *state) {
     if(state == NULL) return;
 
     cout << "Minimum number of moves = " << state->getG_n() << endl;
-    cout << "Total explored Nodes = " << exploredStates << endl;
-    cout << "Total expanded Nodes = " << expandedStates << endl;
+    // cout << "Total explored Nodes = " << exploredStates << endl;
+    // cout << "Total expanded Nodes = " << expandedStates << endl;
 
     while(state != NULL) {
         path.push_back(state);
@@ -162,16 +162,16 @@ bool isSolvable(vector<int> board, int n) {
 int main()
 {
 
-     // Redirecting cout to a file
-    ofstream fileOut("output.txt");
-    streambuf* coutBuffer = cout.rdbuf(); // Save cout buffer
-    cout.rdbuf(fileOut.rdbuf()); // Redirect cout to the file
+    //  // Redirecting cout to a file
+    // ofstream fileOut("output.txt");
+    // streambuf* coutBuffer = cout.rdbuf(); // Save cout buffer
+    // cout.rdbuf(fileOut.rdbuf()); // Redirect cout to the file
 
-    // Redirecting cin from a file
-    ifstream fileIn("in06.txt");
-    streambuf* cinBuffer = cin.rdbuf(); // Save cin buffer
-    cin.rdbuf(fileIn.rdbuf()); // Redirect cin from the file
-
+    // // Redirecting cin from a file
+    // ifstream fileIn("in06.txt");
+    // streambuf* cinBuffer = cin.rdbuf(); // Save cin buffer
+    // cin.rdbuf(fileIn.rdbuf()); // Redirect cin from the file
+    
     int n;
 
     cin >> n;
@@ -197,13 +197,13 @@ int main()
 
     if(goal != NULL) printExpolredStates(goal);
 
-      // Restore cout and cin
-    cout.rdbuf(coutBuffer);
-    cin.rdbuf(cinBuffer);
+    //   // Restore cout and cin
+    // cout.rdbuf(coutBuffer);
+    // cin.rdbuf(cinBuffer);
 
-    // Close the files
-    fileOut.close();
-    fileIn.close();
+    // // Close the files
+    // fileOut.close();
+    // fileIn.close();
 
         
     return 0;
