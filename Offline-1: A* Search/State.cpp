@@ -29,7 +29,7 @@ public:
         this->n = n;
         this->board = board;
         this->g_n = g_n;
-        this->f_n_ham = g_n + Heuristic::hamming_distance(n, board);
+        // this->f_n_ham = g_n + Heuristic::hamming_distance(n, board);
         this->f_n_man = g_n + Heuristic::manhattan_distance(n, board);
         this->prev_state = prev_state;
     }

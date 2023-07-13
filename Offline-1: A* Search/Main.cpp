@@ -13,7 +13,7 @@ using namespace std;
 struct ComparePointers {
     bool operator()(const State* a, const State* b) const {
         // Comparison based on priority
-        return a->getF_n_ham() > b->getF_n_ham();
+        return a->getF_n_man() > b->getF_n_man();
     }
 };
 
@@ -88,8 +88,8 @@ void printExpolredStates(State *state) {
     if(state == NULL) return;
 
     cout << "Minimum number of moves = " << state->getG_n() << endl;
-    // cout << "Total explored Nodes = " << exploredStates << endl;
-    // cout << "Total expanded Nodes = " << expandedStates << endl;
+    cout << "Total explored Nodes = " << exploredStates << endl;
+    cout << "Total expanded Nodes = " << expandedStates << endl;
 
     while(state != NULL) {
         path.push_back(state);
