@@ -143,6 +143,39 @@ void semiGreedy(double alpha) {
     
 }
 
+int localSearch() {
+    bool change = true;
+
+    int iteration = 0;
+
+    while (change) 
+    {
+        iteration++;
+        change = false;
+        
+        for(int v = 1; v <= numVertices && !change; v++) {
+
+            int sigmaX_v = sigmaX(v);
+            int sigmaY_v = sigmaY(v);
+            
+            int del_v = sigmaX_v - sigmaY_v;
+
+            if(X.count(v) && (del_v > 0)) {
+                X.erase(v);
+                Y.insert(v);
+                change = true;
+            } else if (Y.count(v) && del_v < 0) {
+                Y.erase(v);
+                X.insert(v);
+                change = true;
+            }
+        }
+    }
+
+    return iteration;    
+}
+
+
 
 int main() {
 
