@@ -2,7 +2,7 @@
 #include <fstream>
 #include<vector>
 #include<set>
-
+#include<math.h>
 
 using namespace std;
 
@@ -12,8 +12,37 @@ int numVertices, numEdges;
 vector<pair<int, int>> adjList[(int)1e5 + 3];
 set<int> X, Y, Z;
 
+
+int calculateCutSize(set<int> X, set<int> Y) {
+
+    int cutSize = 0;
+
+    for(auto x: X) {
+        for(auto u: adjList[x]) {
+            if(Y.count(u.first)) cutSize += u.second;
+        }
+    }
+
+    for(auto y: Y) {
+        for(auto u: adjList[y]) {
+            if(X.count(u.first)) cutSize += u.second;
+        }
+    }
+
+    return cutSize;
+}
+
+
 int sigmaX(int v) {
+
     int sumWt = 0;
+
+    for (auto x: X) {
+        for(auto u:adjList[x]) {
+            if(u.first == v) sumWt += u.second;
+        }
+    }
+
     for(auto u: adjList[v]) {
         if(X.count(u.first)) sumWt += u.second;
     }
@@ -21,18 +50,31 @@ int sigmaX(int v) {
 }
 
 int sigmaY(int v) {
+
     int sumWt = 0;
+
+    for (auto y: Y) {
+        for(auto u:adjList[y]) {
+            if(u.first == v) sumWt += u.second;
+        }
+    }
+
     for(auto u: adjList[v]) {
         if(Y.count(u.first)) sumWt += u.second;
     }
+
     return sumWt;
 }
 
-int semiGreedy(double alpha) {
 
-    int w_min = MAX_WEIGHT+3, w_max = -MAX_WEIGHT-3;
 
-    for(int u = 1; u < numVertices; u++) {
+void semiGreedy(double alpha) {
+
+    if (alpha < 0) alpha = (rand() % 100)/100.0;
+
+    int w_min = (int)INFINITY, w_max = -(int)INFINITY;
+
+    for(int u = 1; u <= numVertices; u++) {
         for(auto v: adjList[u]) {
             w_min = min(v.second, w_min);
             w_max = max(v.second, w_max);
@@ -43,7 +85,7 @@ int semiGreedy(double alpha) {
 
     vector<pair<int, int>> RCLedge; 
 
-    for(int u = 1; u < numVertices; u++) {
+    for(int u = 1; u <= numVertices; u++) {
         for(auto v: adjList[u]) {
             if(v.second >= cut_off) {
                 RCLedge.push_back(make_pair(u, v.first));
@@ -54,16 +96,17 @@ int semiGreedy(double alpha) {
      // select random edge from rcle
     int idx = rand() % RCLedge.size();
     // remove from Z and insert into x and y
-    Z.erase(RCLedge[idx].first);
     X.insert(RCLedge[idx].first);
-    Z.erase(RCLedge[idx].second);
     Y.insert(RCLedge[idx].second);
+    Z.erase(RCLedge[idx].first);
+    Z.erase(RCLedge[idx].second);
   
     while (Z.size() != 0)
     {
         cout << "semi greedy: " << ((numVertices-Z.size())/(float)numVertices)*100 << "% done" << endl;
-        w_min = MAX_WEIGHT*numEdges;
-        w_max = -MAX_WEIGHT*numEdges;
+        
+        int w_min = (int)INFINITY, w_max = -(int)INFINITY;
+
 
         for(auto v: Z) {
             int sigmaX_v = sigmaX(v);
@@ -100,23 +143,36 @@ int semiGreedy(double alpha) {
     
 }
 
+
 int main() {
 
-    ifstream inputFile("input.txt");
+    freopen ("./set1/g49.rud", "r", stdin);
+    ofstream ReportFile("report1.csv");
 
 
-    inputFile >> numVertices >> numEdges;
+    cin>> numVertices >> numEdges;
 
     int v1, v2, Wt;
 
     for (int i = 0; i < numEdges; ++i) {
-        inputFile >> v1 >> v2 >> Wt;
+        cin >> v1 >> v2 >> Wt;
         adjList[v1].push_back(make_pair(v2, Wt));
     }
 
-    for(int i = 1; i < numVertices; i++) {
+    for(int i = 1; i <= numVertices; i++) {
         Z.insert(i);
     }
-    inputFile.close();
+
+    ReportFile << "SemiGreedy,LocalSearch\n";
+
+    semiGreedy(0.2);
+
+    // TODO: generate report
+
+    ReportFile << calculateCutSize(X, Y) << "\n";
+
+
+    ReportFile.close();
+    
     return 0;
 }
