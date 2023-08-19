@@ -175,7 +175,37 @@ int localSearch() {
     return iteration;    
 }
 
+int GRASP(int maxIteration, float alpha) {
 
+    int iteration = 0;
+
+    set<int> X_prev, Y_prev;
+
+    for (int itr = 1; itr <= maxIteration; itr++) {
+
+        X.clear();
+        Y.clear();
+        for (int i = 1; i <= numVertices; i++) Z.insert(i);
+        
+        semiGreedy(alpha);
+        iteration += localSearch();
+
+        if (itr == 1) { 
+            X_prev = X; 
+            Y_prev = Y; 
+        } else {
+            if (calculateCutSize(X, Y) > calculateCutSize(X_prev, Y_prev)) {
+                X_prev = X; 
+                Y_prev = Y; 
+            }
+        }
+    }
+
+    X = X_prev; 
+    Y = Y_prev;
+
+    return iteration;
+}
 
 int main() {
 
