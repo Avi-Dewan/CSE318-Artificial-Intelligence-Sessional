@@ -11,6 +11,6 @@ g++ 1905120.cpp -o a.out
 
 # Run the compiled executable with different input files 
 
-for i in {11..14}; do
+for i in {1..54}; do
     ./a.out $i
 done

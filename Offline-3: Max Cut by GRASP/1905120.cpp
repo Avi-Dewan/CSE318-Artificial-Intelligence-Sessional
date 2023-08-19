@@ -11,7 +11,7 @@ using namespace std;
 int numVertices, numEdges;
 vector<pair<int, int>> adjList[(int)1e5 + 3];
 set<int> X, Y, Z;
-
+string fileNo;
 
 int calculateCutSize(set<int> X, set<int> Y) {
 
@@ -199,6 +199,8 @@ int GRASP(int maxIteration, float alpha) {
                 Y_prev = Y; 
             }
         }
+
+        cout << "GRASP iteration-" + itr << " for file - " << fileNo << endl;
     }
 
     X = X_prev; 
@@ -214,7 +216,7 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    string fileNo = argv[1] ;
+    fileNo = argv[1] ;
     string inputFileName = "./set1/g" + fileNo + ".rud";
     ifstream inputFile(inputFileName);
 
