@@ -103,7 +103,7 @@ void semiGreedy(double alpha) {
   
     while (Z.size() != 0)
     {
-        cout << "semi greedy: " << ((numVertices-Z.size())/(float)numVertices)*100 << "% done" << endl;
+        // cout << "semi greedy: " << ((numVertices-Z.size())/(float)numVertices)*100 << "% done" << endl;
         
         int w_min = (int)INFINITY, w_max = -(int)INFINITY;
 
@@ -207,18 +207,31 @@ int GRASP(int maxIteration, float alpha) {
     return iteration;
 }
 
-int main() {
+int main(int argc, char *argv[]) {
 
-    freopen ("./set1/g49.rud", "r", stdin);
-    ofstream ReportFile("report1.csv");
+    if (argc != 2) {
+        cerr << "Usage: " << argv[0] << " <input_file>" << endl;
+        return 1;
+    }
+
+    string fileNo = argv[1] ;
+    string inputFileName = "./set1/g" + fileNo + ".rud";
+    ifstream inputFile(inputFileName);
+
+    if (!inputFile) {
+        cerr << "Error opening input file: " << inputFileName << endl;
+        return 1;
+    }
+
+    ofstream outputFile("report.csv", ios::app);
 
 
-    cin>> numVertices >> numEdges;
+    inputFile >> numVertices >> numEdges;
 
     int v1, v2, Wt;
 
     for (int i = 0; i < numEdges; ++i) {
-        cin >> v1 >> v2 >> Wt;
+        inputFile >> v1 >> v2 >> Wt;
         adjList[v1].push_back(make_pair(v2, Wt));
     }
 
@@ -226,16 +239,85 @@ int main() {
         Z.insert(i);
     }
 
-    ReportFile << "SemiGreedy,LocalSearch\n";
+   outputFile << "G" << fileNo << "," << numVertices << "," << numEdges << "," ;
 
-    semiGreedy(0.2);
+    int maxCut = -(int)INFINITY;
+    int cut = 0;
 
-    // TODO: generate report
+    cout << "............CONSTRUCTIVE ALGORITHM............." << endl;
 
-    ReportFile << calculateCutSize(X, Y) << "\n";
+    semiGreedy(0);
+    cut = calculateCutSize(X, Y);
+    outputFile << cut << ",";
+    cout << "Randomized Output done for file " << fileNo << endl;
+    maxCut = max(maxCut, cut);
 
 
-    ReportFile.close();
+    X.clear();
+    Y.clear();
+    for(int i = 1; i <= numVertices; i++) {
+        Z.insert(i);
+    }
+    semiGreedy(1);
+    cut = calculateCutSize(X, Y);
+    outputFile << cut << ",";
+    cout << "Greedy Output done for file " << fileNo << endl;
+    maxCut = max(maxCut, cut);
+
+    X.clear();
+    Y.clear();
+    for(int i = 1; i <= numVertices; i++) {
+        Z.insert(i);
+    }
+    semiGreedy(0.7);
+    cut = calculateCutSize(X, Y);
+    outputFile << cut << ",";
+    cout << "Semi Greedy Output done for file " << fileNo << endl;
+    maxCut = max(maxCut, cut);
+
+
+    cout << "............LOCAL SEARCH............." << endl;
+
+
+    int iter = GRASP(1, 0);
+    cut = calculateCutSize(X, Y);
+    outputFile << iter << "," << cut << ",";
+    cout << "Local Search-1 (initialzed with random) Output done for file " << fileNo << endl;
+    maxCut = max(maxCut, cut);
+
+    iter = GRASP(1, 1);
+    cut = calculateCutSize(X, Y);
+    outputFile << iter << "," << cut << ",";
+    cout << "Local Search-2 (initialzed with greedy) Output done for file " << fileNo << endl;
+    maxCut = max(maxCut, cut);
+
+    iter = GRASP(1, 0.7);
+    cut = calculateCutSize(X, Y);
+    outputFile << iter << "," << cut << ",";
+    cout << "Local Search-3 (initialzid with semi-greedy, alpha=0.7) Output done for file " << fileNo << endl;
+    maxCut = max(maxCut, cut);
+
+    cout << "............GRASP............." << endl;
+
+    iter = GRASP(30, 0.8);
+    cut = calculateCutSize(X, Y);
+    outputFile << iter << "," << cut << ",";
+    cout << "Grasp-1(alpha=0.8, max iteration=30) Output done for file " << fileNo << endl;
+    maxCut = max(maxCut, cut);
+
+    iter = GRASP(100, 0.8);
+    cut = calculateCutSize(X, Y);
+    outputFile << iter << "," << cut << ",";
+    cout << "Grasp-2(alpha=0.8, max iteration=100) Output done for file " << fileNo << endl;
+    maxCut = max(maxCut, cut);
+
+    
+
+    outputFile << maxCut << "\n";
+    outputFile.close();
     
     return 0;
 }
+
+
+
