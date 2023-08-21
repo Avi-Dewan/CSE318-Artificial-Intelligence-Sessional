@@ -240,7 +240,7 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    ofstream outputFile("report22.csv", ios::app);
+    ofstream outputFile("report.csv", ios::app);
 
 
     inputFile >> numVertices >> numEdges;
